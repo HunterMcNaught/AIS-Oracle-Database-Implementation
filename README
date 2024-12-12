@@ -1,0 +1,157 @@
+Disclaimer:
+    The data used in this publicly posted version of the project does not reflect any private information given to the Association for Information Systems CSULB. 
+    Nor is it affiliated with the International Association for information Systems.
+
+
+**Logical Model** 
+
+Entities and Attributes:
+1. Member
+    Attributes:
+        Member_ID (Primary Key)
+        Name
+        Email
+        Student_Status (Boolean, must be true)
+        Member_Type (General or Paid)
+        Meetings_Attended(Int)
+        Is_Board_Member (Boolean)
+2. Paid_Member
+    Attributes:
+        Paid_Member_ID (Primary Key, Foreign Key referencing Member_ID)
+        Payment_Method (Cash/Online)
+        Payment_Date
+        Mentorship_Program_Status (Boolean)
+3. General_Meeting
+    Attributes:
+        Meeting_ID (Primary Key)
+        Date
+        Attendee_ID (Foreign Key referencing Member_ID)
+4. Payment
+    Attributes:
+        Payment_ID (Primary Key)
+        Paid_Member_ID (Foreign Key referencing Paid_Member_ID)
+        Payment_Amount
+        Payment_Method (Cash/Online)
+        Payment_Date
+5. Corporate_Tour
+    Attributes:
+        Tour_ID (Primary Key)
+        Paid_Member_ID (Foreign Key referencing Paid_Member_ID)
+        Company_Name (e.g., Skechers)
+        Date
+6. Mentorship_Program
+    Attributes:
+        Program_ID (Primary Key)
+        Paid_Member_ID (Foreign Key referencing Paid_Member_ID)
+        Mentor_Name
+        Start_Date
+        End_Date
+7. Datathon
+    Attributes:
+        Datathon_ID (Primary Key)
+        Member_ID (Foreign Key referencing Member_ID)
+        Paid_Status (Boolean)
+        Registration_Date
+
+**Relationships**:
+
+Member → Paid_Member: One-to-One (General Members may become Paid Members).
+Member → General_Meeting: One-to-Many (A Member can attend multiple meetings).
+Paid_Member → Payment: One-to-Many (Each Paid Member can make multiple payments, tracked in Payment table).
+Paid_Member → Corporate_Tour: One-to-Many (Each Paid Member can attend multiple corporate tours).
+Paid_Member → Mentorship_Program: One-to-One (Each Paid Member is paired with one mentor).
+Member → Datathon: One-to-Many (Both General and Paid Members can participate in multiple Datathons).
+
+
+
+
+**Data Dictionary** 
+
+Payment:
+Description: Official record list of all paid members.
+    Attributes:
+        Payment_ID: Unique identifier for each payment transaction.
+        Paid_Member_ID: References the member who made the payment (links to Member table).
+        Payment_Amount: The amount paid by the member.
+        Payment_Method: Method of payment (Cash, Online).
+        Payment_Date: Date the payment was made.
+
+Member:
+Description: Official record list of all members: general and paid members.
+    Attributes:
+        Member_ID: Unique identifier for each member.
+        Name: Full name of the member.
+        Email: Email address of the member.
+        Student_Status: Status of the member (should be "Student" for all members).
+        Member_Type: Type of membership (gen for General members, paid for Paid members).
+        Meetings_Attended: Number of general meetings attended by the member.
+        Is_Board_Member: Boolean indicating if the member is on the board (1 = Yes, 0 = No).
+
+General_Meeting:
+Description: Tracks the general meetings attended by members.
+    Attributes:
+        Meeting_ID: Unique identifier for each meeting.
+        Date: Date the meeting was held.
+        Attendee_ID: References the member who attended the meeting.
+
+Datathon:
+Description: Official record of member participation in the Datathon event.
+    Attributes:
+        Datathon_ID: Unique identifier for each Datathon registration.
+        Member_ID: References the member who registered for the Datathon.
+        Paid_Status: Indicates whether the member paid for the Datathon entry (True/False).
+        Registration_Date: Date the member registered for the Datathon.
+
+Corporate_Tour:
+Description: Tracks the corporate tour events and participating members.
+    Attributes:
+        Tour_ID: Unique identifier for each corporate tour event.
+        Paid_Member_ID: References the paid member attending the corporate tour.
+        Company_Name: Name of the company visited (Spring 2025 will be Skechers).
+        Date: Date of the corporate tour.
+
+Mentorship_Program:
+Description: Records the mentorship program pairing between paid members and industry professionals in the MIS field.
+    Attributes:
+        Program_ID: Unique identifier for each mentorship program.
+        Paid_Member_ID: References the paid member paired with the mentor.
+        Mentor_Name: Name of the industry professional mentor.
+        Start_Date: Start date of the mentorship program.
+        End_Date: End date of the mentorship program.
+
+
+
+**Description of the need for this database** 
+
+The Association for Information Systems is a student lead organization for students who are interested in furthering their professional development relating to Management Information Systems. As the Association for Information Systems grows larger, a database would be of great help to keep track of all records relating to the club. Creating a database with different attributes and entities can allow our executive board team to maintain the club more easily, and also make better data driven decisions. It would also be helpful for AIS board members to have a consolidated database, rather than how we operate currently with separate Google Drives.
+
+
+
+
+
+
+
+
+
+
+**Description of the physical design**
+
+Tables that need to be denormalized 
+No normalization is needed. Each attribute is atomic, every attribute that is not a primary or foreign key is fully functional on the dependent on the entire primary key, and there are no transitive dependencies.  
+Which entities will have access to functions of the database, which would be insert, read, modify and delete. Any constraints?
+Board Members would have access to insert, read, modify, and delete any record in the database. Board members would have access to the results of the attendance of general meetings, payment data, applications and data for the Datathon, corporate tour signups, and lastly applications and data related to the Mentorship Program.
+General members will only be able to insert data in the general meeting attendance table
+If general members pay a fee, general members will be able to insert and read the Dataset information in the Datathon table
+Paid members will be able to insert data in the general meeting attendance table, insert data into the Corporate Tour table, insert data to apply and read the Dataset information in the Datathon table, insert data to apply for our Mentorship Program and read necessary documents 
+How are you organizing the files and why?
+We would like to organize our files in mySQL Oracle Database. This is the program we learned how to navigate in class. It would make it easier for us to write SQL queries to pull relevant data. 
+Brief description of the database recovery policy
+Backup
+Backup our database everyday at EOD (8:00 pm)
+Store database on mySQL backup server
+Only current board members will be able to access backup files 
+Database Administrator
+Assign someone on the technology committee to be our database administrator
+Recovery procedure
+Identify affected tables or attributes 
+Initiate backup or full backup depending on what was affected in the database
