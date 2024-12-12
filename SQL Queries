@@ -1,0 +1,134 @@
+Purpose:
+To view which members may have attended individual meetings.
+SELECT
+    M.MEMBER_ID AS "Member ID",
+    M.NAME AS "Member Name",
+    G.MEETING_ID AS "Meeting ID",
+    G.ATTENDEE_ID AS "Attendee ID"
+FROM MEMBERS M
+JOIN GENERAL_MEETING G
+ON M.MEMBER_ID = G.ATTENDEE_ID
+GROUP BY M.MEMBER_ID, M.NAME, G.MEETING_ID, G.ATTENDEE_ID
+ORDER BY M.MEMBER_ID;
+MemberID    MemberName    MeetingID    AttendeeID   
+         4 Member_4               108             4
+         6 Member_6               106             6
+         7 Member_7               104             7
+         9 Member_9               114             9
+         9 Member_9               105             9
+        11 Member_11              110            11
+        11 Member_11              115            11
+        11 Member_11              112            11
+        12 Member_12              103            12
+        12 Member_12              101            12
+        12 Member_12              107            12
+        12 Member_12              102            12
+        14 Member_14              109            14
+        14 Member_14              111            14
+MemberID    MemberName    MeetingID    AttendeeID   
+        14 Member_14              113            14
+
+
+Purpose:
+To view how many meetings individual members attended.
+SELECT
+    G.ATTENDEE_ID AS "Attendee ID",
+    M.NAME AS "Member Name",
+    COUNT(G.MEETING_ID) AS "Meeting Count"
+FROM GENERAL_MEETING G
+JOIN MEMBERS M
+ON G.ATTENDEE_ID = M.MEMBER_ID
+GROUP BY G.ATTENDEE_ID, M.NAME
+ORDER BY "Meeting Count" DESC;
+
+AttendeeID    MemberName    MeetingCount    
+           12 Member_12                   4 
+           14 Member_14                   3 
+           11 Member_11                   3 
+            9 Member_9                    2 
+            6 Member_6                    1 
+            4 Member_4                    1 
+            7 Member_7                    1 
+
+Purpose:
+To view which members are paid members
+SELECT
+    M.MEMBER_ID AS "Member ID",
+    M.NAME AS "Member Name",
+    P.PAYMENT_DATE AS "Payment Date"
+FROM MEMBERS M
+JOIN PAID_MEMBERS P
+ON M.MEMBER_ID = P.PAID_MEMBER_ID
+GROUP BY M.MEMBER_ID, M.NAME, P.PAYMENT_DATE, P.PAID_MEMBER_ID
+ORDER BY P.PAYMENT_DATE;
+MemberID    MemberName    PaymentDate   
+        13 Member_13     15/01/24      
+         8 Member_8      19/01/24      
+         2 Member_2      07/02/24      
+         1 Member_1      22/02/24      
+         9 Member_9      31/03/24      
+        12 Member_12     27/05/24      
+        11 Member_11     31/05/24      
+        14 Member_14     14/08/24      
+         7 Member_7      30/08/24      
+         5 Member_5      31/08/24      
+         6 Member_6      03/09/24      
+        15 Member_15     04/09/24      
+        10 Member_10     12/09/24      
+         4 Member_4      14/09/24      
+MemberID    MemberName    PaymentDate   
+         3 Member_3      30/10/24
+
+
+
+
+
+
+Purpose:
+To check for members attending the datathons who have not yet paid
+SELECT
+    d.DATATHON_ID AS "Datathon ID",
+    d.MEMBER_ID AS "Member ID",
+    m.NAME AS "Member Name",
+    d.PAID_STATUS AS "Paid Status (0 = Not Paid)"
+FROM
+    DATATHON d
+JOIN
+    MEMBERS m ON d.MEMBER_ID = m.MEMBER_ID
+WHERE
+    d.PAID_STATUS = 0;
+
+
+DatathonID    MemberID    MemberName    PaidStatus(0=NotPaid)    
+           11           2 	Member_2                             0 
+            6           3	 Member_3                             0 
+           13           4 	Member_4                             0 
+            9           7	 Member_7                             0 
+            7          13 	Member_13                            0 
+
+
+Purpose:
+To show what members have attended corporate tours and verify that they have paid within the last 6  months
+SELECT
+  m.NAME,
+  t.TOUR_ID,
+  t.TOUR_DATE
+FROM
+  MEMBERS m
+JOIN
+  PAID_MEMBERS p ON m.MEMBER_ID = p.PAID_MEMBER_ID
+JOIN
+  CORPORATE_TOUR t ON p.PAID_MEMBER_ID = t.PAID_MEMBER_ID
+WHERE
+  p.PAYMENT_DATE >= '11/06/2024';
+
+
+NAME         TOUR_ID    TOUR_DATE    PAYMENT_DATE    
+Member_14             1 05/06/24     14/08/24        
+Member_5              3 26/02/24     31/08/24        
+Member_6              5 17/10/24     03/09/24        
+Member_3              6 12/11/24     30/10/24        
+Member_7              7 20/06/24     30/08/24        
+Member_6             11 16/02/24     03/09/24        
+Member_3             12 07/02/24     30/10/24        
+Member_7             13 17/07/24     30/08/24       
