@@ -1,0 +1,57 @@
+CREATE TABLE Members (
+    Member_ID INT PRIMARY KEY,
+    Name VARCHAR2(255),
+    Email VARCHAR2(255),
+    Student_Status VARCHAR2(50),
+    Member_Type VARCHAR2(50),
+    Meetings_Attended INT,
+    Is_Board_Member BOOLEAN
+);
+
+CREATE TABLE Paid_Members (
+    Paid_Member_ID INT PRIMARY KEY,
+    Payment_Method VARCHAR2(50),
+    Payment_Date DATE,
+    Mentorship_Program_Status BOOLEAN
+);
+
+CREATE TABLE Datathon (
+    Datathon_ID INT PRIMARY KEY,
+    Member_ID INT,
+    Paid_Status BOOLEAN,
+    Registration_Date DATE,
+    FOREIGN KEY (Member_ID) REFERENCES Members(Member_ID)
+);
+
+CREATE TABLE Mentorship_Program (
+    Program_ID INT PRIMARY KEY,
+    Paid_Member_ID INT,
+    Mentor_Name VARCHAR2(255),
+    Start_Date DATE,
+    End_Date DATE,
+    FOREIGN KEY (Paid_Member_ID) REFERENCES Paid_Members(Paid_Member_ID)
+);
+
+CREATE TABLE General_Meeting (
+    Meeting_ID INT PRIMARY KEY,
+    Date DATE,
+    Attendee_ID INT,
+    FOREIGN KEY (Attendee_ID) REFERENCES Members(Member_ID)
+);
+
+CREATE TABLE Corporate_Tour (
+    Tour_ID INT PRIMARY KEY,
+    Paid_Member_ID INT,
+    Company_Name VARCHAR2(255),
+    Date DATE,
+    FOREIGN KEY (Paid_Member_ID) REFERENCES Paid_Members(Paid_Member_ID)
+);
+
+CREATE TABLE Payment (
+    Payment_ID INT PRIMARY KEY,
+    Paid_Member_ID INT,
+    Payment_Amount DECIMAL(10, 2),
+    Payment_Method VARCHAR2(50),
+    Payment_Date DATE,
+    FOREIGN KEY (Paid_Member_ID) REFERENCES Paid_Members(Paid_Member_ID)
+);
